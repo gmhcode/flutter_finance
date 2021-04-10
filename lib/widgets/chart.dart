@@ -3,6 +3,8 @@ import 'package:flutter_finance/models/transaction.dart';
 import '../models/transaction.dart';
 import 'package:intl/intl.dart';
 
+import 'chart_bar.dart';
+
 class Chart extends StatelessWidget {
   final List<Transaction> recentTransactions;
   //Initializer
@@ -29,6 +31,12 @@ class Chart extends StatelessWidget {
     });
   }
 
+  double get maxSpending {
+    return groupedTrasactionValues.fold(0.0, (sum, item) {
+      return sum + item["amount"];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     print(groupedTrasactionValues);
@@ -37,7 +45,12 @@ class Chart extends StatelessWidget {
       margin: EdgeInsets.all(20),
       child: Row(
         children: groupedTrasactionValues.map((data) {
-          return Text("${data["day"]}: ${data["amount"]}");
+          return ChartBar(
+              data["day"],
+              data["amount"],
+              maxSpending == 0.0
+                  ? 0.0
+                  : (data['amount'] as double) / maxSpending);
         }).toList(),
       ),
     );
