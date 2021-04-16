@@ -12,7 +12,9 @@ class Chart extends StatelessWidget {
 
   List<Map<String, Object>> get groupedTrasactionValues {
     return List.generate(7, (index) {
-      final weekDay = DateTime.now().subtract(Duration(days: index));
+      final weekDay = DateTime.now().subtract(
+        Duration(days: index),
+      );
       double totalSum = 0.0;
 
       for (var i = 0; i < recentTransactions.length; i++) {
@@ -28,7 +30,7 @@ class Chart extends StatelessWidget {
         "day": DateFormat.E().format(weekDay).substring(0, 1),
         "amount": totalSum,
       };
-    });
+    }).reversed.toList();
   }
 
   double get maxSpending {
@@ -43,15 +45,23 @@ class Chart extends StatelessWidget {
     return Card(
       elevation: 6,
       margin: EdgeInsets.all(20),
-      child: Row(
-        children: groupedTrasactionValues.map((data) {
-          return ChartBar(
-              data["day"],
-              data["amount"],
-              maxSpending == 0.0
-                  ? 0.0
-                  : (data['amount'] as double) / maxSpending);
-        }).toList(),
+      child: Padding(
+        padding: EdgeInsets.all(10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: groupedTrasactionValues.map((data) {
+            return Flexible(
+              //each child has the same space
+              fit: FlexFit.tight,
+              child: ChartBar(
+                  data["day"],
+                  data["amount"],
+                  maxSpending == 0.0
+                      ? 0.0
+                      : (data['amount'] as double) / maxSpending),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
