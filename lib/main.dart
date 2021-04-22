@@ -125,6 +125,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+
     final appBar = AppBar(
       title: Text("Personal Expenses"),
       actions: [
@@ -134,6 +138,18 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       ],
     );
+
+    final txListWidget = Container(
+      height: (mediaQuery.size.height -
+              appBar.preferredSize.height -
+              mediaQuery.padding.top) *
+          0.7,
+      child: TransactionList(
+        transactions: _userTransactions,
+        deleteTx: deleteNewTransaction,
+      ),
+    );
+
     return Scaffold(
       appBar: appBar,
       body: SingleChildScrollView(
@@ -141,42 +157,48 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Show Chart"),
-                Switch(
-                  value: showChart,
-                  onChanged: (val) {
-                    setState(() {
-                      showChart = val;
-                    });
-                  },
-                ),
-              ],
-            ),
-            showChart
-                ? Container(
-
-                    ///height of the device
-                    height: (MediaQuery.of(context).size.height -
-                            //minus the app bar
-                            appBar.preferredSize.height -
-                            //minus the status bar
-                            MediaQuery.of(context).padding.top) *
-                        //times 40% of the remaining height
-                        0.3,
-                    child: Chart(_recentTransactions))
-                : Container(
-                    height: (MediaQuery.of(context).size.height -
-                            appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
-                        0.4,
-                    child: TransactionList(
-                      transactions: _userTransactions,
-                      deleteTx: deleteNewTransaction,
-                    ),
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Show Chart"),
+                  Switch(
+                    value: showChart,
+                    onChanged: (val) {
+                      setState(() {
+                        showChart = val;
+                      });
+                    },
                   ),
+                ],
+              ),
+            if (!isLandscape)
+              Container(
+
+                  ///height of the device
+                  height: (mediaQuery.size.height -
+                          //minus the app bar
+                          appBar.preferredSize.height -
+                          //minus the status bar
+                          mediaQuery.padding.top) *
+                      //times 40% of the remaining height
+                      0.3,
+                  child: Chart(_recentTransactions)),
+            if (!isLandscape) txListWidget,
+            if (isLandscape)
+              showChart
+                  ? Container(
+
+                      ///height of the device
+                      height: (mediaQuery.size.height -
+                              //minus the app bar
+                              appBar.preferredSize.height -
+                              //minus the status bar
+                              mediaQuery.padding.top) *
+                          //times 40% of the remaining height
+                          0.7,
+                      child: Chart(_recentTransactions))
+                  : txListWidget
           ],
         ),
       ),

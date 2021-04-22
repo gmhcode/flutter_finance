@@ -53,10 +53,19 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        child: ListView(children: [
-          Column(
+    return ListView(children: [
+      Card(
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 10,
+            left: 10,
+            right: 10,
+            //THIS TELLS US HOW MUCH SPACE THE KEYBOARD IS TAKING UP
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          child:
+              //  ListView(children: [
+              Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               TextField(
@@ -106,8 +115,9 @@ class _NewTransactionState extends State<NewTransaction> {
               )
             ],
           ),
-        ]),
-      ),
-    );
+          // ]),
+        ),
+      )
+    ]);
   }
 }
