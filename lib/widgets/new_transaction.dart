@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_finance/widgets/adaptive_button.dart';
 import 'package:intl/intl.dart';
 
 class NewTransaction extends StatefulWidget {
@@ -70,7 +71,6 @@ class _NewTransactionState extends State<NewTransaction> {
               Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              CupertinoTextField(),
               TextField(
                 decoration: InputDecoration(labelText: 'Title'),
                 controller: titleController,
@@ -96,23 +96,10 @@ class _NewTransactionState extends State<NewTransaction> {
                           ? "No Date Chosen"
                           : "Picked Date: ${DateFormat.yMd().format(selectedDate)}"),
                     ),
-                    Platform.isIOS
-                        ? CupertinoButton(
-                            child: Text(
-                              "Choose Date",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            onPressed: presentDatePicker,
-                          )
-                        : TextButton(
-                            style: TextButton.styleFrom(
-                                primary: Theme.of(context).primaryColor),
-                            child: Text(
-                              "Choose Date",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            onPressed: presentDatePicker,
-                          )
+                    AdaptiveFlatButton(
+                      text: 'Choose Date',
+                      handler: presentDatePicker,
+                    )
                   ],
                 ),
               ),
