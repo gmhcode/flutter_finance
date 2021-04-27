@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_finance/widgets/chart.dart';
 import 'package:flutter_finance/widgets/new_transaction.dart';
 import 'package:flutter_finance/widgets/transaction_list.dart';
@@ -9,10 +8,10 @@ import './widgets/chart.dart';
 import './models/transaction.dart';
 
 void main() {
-  // //force portrait mode
+  // //force portrait mode VV
   // WidgetsFlutterBinding.ensureInitialized();
   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  // //force portrait mode
+  // //force portrait mode VV
   runApp(MyApp());
 }
 
@@ -23,6 +22,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  @override
+  void didUpdateWidget(covariant MyApp oldWidget) {
+    print('didUpdateWidget()');
+    super.didUpdateWidget(oldWidget);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -67,8 +72,29 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   bool showChart = false;
+  @override
+  void initState() {
+    print('init state');
+    //WHEN THIS WIDGET LOADS, CALL THE didChangeAppLifecycleState BY ADDING THIS OBSERVER
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  //Whenever the app enters background.. etc
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('🥑 cycle changed to $state');
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    //When this class is disposed we remove the didChangeAppLifecycleState observer
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
   final List<Transaction> _userTransactions = [
     // Transaction(
     //   id: "t1",
