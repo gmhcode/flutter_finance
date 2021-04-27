@@ -90,6 +90,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
+//....###....########..########.....##....##.########.##......##....########.########.
+//...##.##...##.....##.##.....##....###...##.##.......##..##..##.......##....##.....##
+//..##...##..##.....##.##.....##....####..##.##.......##..##..##.......##....##.....##
+//.##.....##.##.....##.##.....##....##.##.##.######...##..##..##.......##....########.
+//.#########.##.....##.##.....##....##..####.##.......##..##..##.......##....##...##..
+//.##.....##.##.....##.##.....##....##...###.##.......##..##..##.......##....##....##.
+//.##.....##.########..########.....##....##.########..###..###........##....##.....##
   void _addNewTransaction(
       String txTitle, double txAmount, DateTime chosenDate) {
     final newTx = Transaction(
@@ -109,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  ///SHOWS THE MODAL SHEET
   void startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
       context: ctx,
@@ -122,7 +130,88 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+//.########..##.....##.####.##.......########.....##..........###....##....##.########...######...######.....###....########..########
+//.##.....##.##.....##..##..##.......##.....##....##.........##.##...###...##.##.....##.##....##.##....##...##.##...##.....##.##......
+//.##.....##.##.....##..##..##.......##.....##....##........##...##..####..##.##.....##.##.......##........##...##..##.....##.##......
+//.########..##.....##..##..##.......##.....##....##.......##.....##.##.##.##.##.....##..######..##.......##.....##.########..######..
+//.##.....##.##.....##..##..##.......##.....##....##.......#########.##..####.##.....##.......##.##.......#########.##........##......
+//.##.....##.##.....##..##..##.......##.....##....##.......##.....##.##...###.##.....##.##....##.##....##.##.....##.##........##......
+//.########...#######..####.########.########.....########.##.....##.##....##.########...######...######..##.....##.##........########
+  List<Widget> _buildLandscapeContent(
+    MediaQueryData mediaQuery,
+    PreferredSizeWidget appBar,
+    Widget txListWidget,
+  ) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Show Chart",
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          Switch.adaptive(
+            value: showChart,
+            onChanged: (val) {
+              setState(() {
+                showChart = val;
+              });
+            },
+          ),
+        ],
+      ),
+      showChart
+          ? Container(
+
+              ///height of the device
+              height: (mediaQuery.size.height -
+                      //minus the app bar
+                      appBar.preferredSize.height -
+                      //minus the status bar
+                      mediaQuery.padding.top) *
+                  //times 40% of the remaining height
+                  0.7,
+              child: Chart(_recentTransactions))
+          : txListWidget
+    ];
+  }
+
+//.########..##.....##.####.##.......########..........########...#######..########..########.########.....###....####.########
+//.##.....##.##.....##..##..##.......##.....##.........##.....##.##.....##.##.....##....##....##.....##...##.##....##.....##...
+//.##.....##.##.....##..##..##.......##.....##.........##.....##.##.....##.##.....##....##....##.....##..##...##...##.....##...
+//.########..##.....##..##..##.......##.....##.........########..##.....##.########.....##....########..##.....##..##.....##...
+//.##.....##.##.....##..##..##.......##.....##.........##........##.....##.##...##......##....##...##...#########..##.....##...
+//.##.....##.##.....##..##..##.......##.....##.........##........##.....##.##....##.....##....##....##..##.....##..##.....##...
+//.########...#######..####.########.########..#######.##.........#######..##.....##....##....##.....##.##.....##.####....##...
+  List<Widget> _buildPortraitContent(
+    MediaQueryData mediaQuery,
+    PreferredSizeWidget appBar,
+    Widget txListWidget,
+  ) {
+    return [
+      Container(
+        ///height of the device
+        height: (mediaQuery.size.height -
+                //minus the app bar
+                appBar.preferredSize.height -
+                //minus the status bar
+                mediaQuery.padding.top) *
+            //times 40% of the remaining height
+            0.3,
+        child: Chart(_recentTransactions),
+      ),
+      txListWidget
+    ];
+  }
+
   @override
+  // .########..##.....##.####.##.......########.
+  // .##.....##.##.....##..##..##.......##.....##
+  // .##.....##.##.....##..##..##.......##.....##
+  // .########..##.....##..##..##.......##.....##
+  // .##.....##.##.....##..##..##.......##.....##
+  // .##.....##.##.....##..##..##.......##.....##
+  // .########...#######..####.########.########.
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
 
@@ -170,50 +259,11 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             if (isLandscape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Show Chart",
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  Switch.adaptive(
-                    value: showChart,
-                    onChanged: (val) {
-                      setState(() {
-                        showChart = val;
-                      });
-                    },
-                  ),
-                ],
-              ),
+              ..._buildLandscapeContent(mediaQuery, appBar, txListWidget),
             if (!isLandscape)
-              Container(
-
-                  ///height of the device
-                  height: (mediaQuery.size.height -
-                          //minus the app bar
-                          appBar.preferredSize.height -
-                          //minus the status bar
-                          mediaQuery.padding.top) *
-                      //times 40% of the remaining height
-                      0.3,
-                  child: Chart(_recentTransactions)),
-            if (!isLandscape) txListWidget,
-            if (isLandscape)
-              showChart
-                  ? Container(
-
-                      ///height of the device
-                      height: (mediaQuery.size.height -
-                              //minus the app bar
-                              appBar.preferredSize.height -
-                              //minus the status bar
-                              mediaQuery.padding.top) *
-                          //times 40% of the remaining height
-                          0.7,
-                      child: Chart(_recentTransactions))
-                  : txListWidget
+              ..._buildPortraitContent(mediaQuery, appBar, txListWidget),
+            // if (!isLandscape) ,
+            // if (isLandscape),
           ],
         ),
       ),
