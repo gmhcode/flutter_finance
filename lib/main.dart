@@ -11,7 +11,7 @@ void main() {
   // //force portrait mode VV
   // WidgetsFlutterBinding.ensureInitialized();
   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  // //force portrait mode VV
+  // //force portrait mode ^^
   runApp(MyApp());
 }
 
